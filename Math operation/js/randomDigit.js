@@ -5,7 +5,7 @@ let randomDigit = (function(){
 	let init = function(digit, fraction){
 		let rndDigit = main(digit, fraction);
 		//console.log(min, max, digit, fraction);
-		console.log(rndDigit);
+		//console.log(rndDigit);
 		return rndDigit;
 	};
 

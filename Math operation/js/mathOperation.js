@@ -256,7 +256,7 @@ let mathOperationAddAndSub = (function(){
 		resultArr = resizeArr(resultArr);
 
 		result = resultArr.join("");
-		console.log("Module: mathOperationAddAndSub result = ", result);
+		//console.log("Module: mathOperationAddAndSub result = ", result);
 		console.log(`Module: mathOperationAddAndSub ${digit1} ${action} ${digit2} = ${result}`);
 		return result;
 	};

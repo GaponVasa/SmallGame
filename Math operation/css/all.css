@@ -33,10 +33,10 @@ html{
  background:#fff;
 }
 body{
- font:10px/10px Arial, Helvetica, sans-serif;
+ font:16px/16px Arial, Helvetica, sans-serif;
  min-height:100%;
  min-width: 120px;
- /*width: 100%;*/
+ width: 50%;
  margin: 0 auto;
  color:#000;
 }
@@ -54,7 +54,7 @@ body{
 /*-----------------------------MAIN-------------------------------*/
 main{
 	width: 100%;
-	margin: 0 auto;
+	margin: 20px auto;
 }
 main .container{
 	min-height: 100%;
@@ -66,6 +66,17 @@ main .container{
 .container > button{
 	margin: 10px 20px;
 	cursor: pointer;
+}
+.container > input{
+	width: 100px;
+    font-size: 24px;
+    line-height: 24px;
+}
+.action{
+	display: inline-block;
+    font-size: 24px;
+    line-height: 24px;
+    margin: 5px;
 }
 .firstDigit{
 
@@ -91,16 +102,42 @@ main .container{
 }
 .digitImage button{
 	float: left;
-	cursor: pointer;
 }
 .btn{
 	padding: 10px;
-	font-size: 16px;
-    line-height: 16px;
+	
 	border: 1px solid black;
 	border-radius: 3px;
+	cursor: pointer;
+}
+.black{
+	color: black;
+	border: 1px solid black;
 }
 .active{
 	color: red;
 	border: 1px solid red;
 }
+.wraperInputs{
+
+}
+.wraperInputs label{
+	font-size: 20px;
+    line-height: 20px;
+}
+.wraperInputs label .inpt{
+	-webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border-width: 3px;
+    border-style: solid;
+    transition: 0.2s all linear;
+}
+.wraperInputs label .inpt:checked {
+    border-width: 8px;
+}
+.borderGrey{border-color: #999;}
+.borderRed{border-color: red;}
+.borderGreen{border-color: green;}
