@@ -69,7 +69,7 @@ main .container{
 }
 .container > input{
 	width: 100px;
-	height: 100%;
+	/*height: 100%;*/
     font-size: 24px;
     line-height: 24px;
 }
@@ -142,3 +142,21 @@ main .container{
 .borderGrey{border-color: #999;}
 .borderRed{border-color: red;}
 .borderGreen{border-color: green;}
+.borderBlue{border-color: blue;}
+.backgroundRed{background-color: red;}
+.backgroundGreen{background-color: green;}
+.block{
+	display: none;
+	/*height: 100px;*/
+	/*overflow: hidden;*/
+}
+.tableResult{
+	display: none;
+}
+.tableResult table{
+	/*border: 1px solid black;*/
+}
+.tableResult table th, .tableResult table td{
+	border: 1px solid black;
+	padding: 5px;
+}

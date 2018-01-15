@@ -1,38 +1,48 @@
 "use strict";
 
 let mathOperation = (function () {
-	let hundreds, dozens, units, coma, tenth, hundredth, arrBtn;
-	let addBtn, subBtn, mixBtn, startBtn;
-	let firstDigitDiv, operationDiv, secondDigitDiv, resultInput, checkBtn, wraperInputs;
-	let firstDigit, signOperation, secondDigit, result;
-	let digit = 0, fraction = 0;
-	const NUMBER_OF_REPETITION = 10;
-	const CLASS_GREEN = 'win';
-	const CLASS_RED = 'active';
-	const CLASS_BLACK = 'black';
-	const BORDER_GRAY = 'borderGrey';
-	const BORDER_RED = 'borderRed';
-	const BORDER_GREEN = 'borderGreen';
+	let ID,
+		eventsIdEl, hundreds, dozens, units, coma, tenth, hundredth, arrBtn,
+		addBtn, subBtn, mixBtn, startBtn,
+		firstDigitDiv, operationDiv, secondDigitDiv, resultInput, checkBtn, wraperInputs, block,
+		firstDigit, signOperation, secondDigit, result,
+		digit = 0, fraction = 0,
+		tableResult;
+	const NUMBER_OF_REPETITION = 10,
+		CLASS_GREEN = 'win',
+		CLASS_RED = 'active',
+		CLASS_BLACK = 'black',
+		BORDER_GRAY = 'borderGrey',
+		BORDER_RED = 'borderRed',
+		BORDER_GREEN = 'borderGreen',
+		BORDER_BLUE = 'borderBlue';
+
 	let init = function(id){
-		addBtn = id.querySelector('button[name="add"]');
-		subBtn = id.querySelector('button[name="sub"]');
-		mixBtn = id.querySelector('button[name="mix"]');
-		startBtn = id.querySelector('button[name="start"]');
-		firstDigitDiv = id.querySelector('div.firstDigit');
-		operationDiv = id.querySelector('div.operation');
-		secondDigitDiv = id.querySelector('div.secondDigit');
-		wraperInputs = id.querySelector('div.wraperInputs');
-		resultInput = id.querySelector('input.result');
-		checkBtn = id.querySelector('.btn[name=check]');
-		hundreds = id.querySelector('.btn[name=hundreds]');
-		dozens = id.querySelector('.btn[name=dozens]');
-		units = id.querySelector('.btn[name=units]');
-		coma = id.querySelector('.btn[name=coma]');
-		tenth = id.querySelector('.btn[name=tenth]');
-		hundredth = id.querySelector('.btn[name=hundredth]');
-		arrBtn = id.querySelectorAll('.digitImage .btn');
+		ID = id;
+		addBtn = ID.querySelector('button[name="add"]');
+		subBtn = ID.querySelector('button[name="sub"]');
+		mixBtn = ID.querySelector('button[name="mix"]');
+		startBtn = ID.querySelector('button[name="start"]');
 		
-		id.addEventListener('click', btnClick, true);
+		wraperInputs = ID.querySelector('div.wraperInputs');
+		firstDigitDiv = ID.querySelector('div.firstDigit');
+		operationDiv = ID.querySelector('div.operation');
+		secondDigitDiv = ID.querySelector('div.secondDigit');
+		resultInput = ID.querySelector('input.result');
+		checkBtn = ID.querySelector('.btn[name=check]');
+				
+		block = ID.querySelector('.block');
+		hundreds = ID.querySelector('.btn[name=hundreds]');
+		dozens = ID.querySelector('.btn[name=dozens]');
+		units = ID.querySelector('.btn[name=units]');
+		coma = ID.querySelector('.btn[name=coma]');
+		tenth = ID.querySelector('.btn[name=tenth]');
+		hundredth = ID.querySelector('.btn[name=hundredth]');
+		arrBtn = ID.querySelectorAll('.digitImage .btn');
+
+		tableResult = ID.querySelector('.tableResult');
+		
+		eventsIdEl = ID.addEventListener('click', btnClick, true);
 	};
 
 	let btnClick = function(event){
@@ -49,11 +59,15 @@ let mathOperation = (function () {
 			addClass([subBtn],'active');
 			signOperation = '-';
 		}else if(target === startBtn){
-			//console.log('signOperation =', signOperation)
+			//console.log('signOperation =', signOperation);
+			//console.log('digit =', digit);
 			//console.log('btnClick() startBtn');
 			if(digit !== 0 && signOperation !== undefined){
+				//console.log('btnClick() startBtn');
 				start();
 				createInputs(wraperInputs, NUMBER_OF_REPETITION);
+				moduleSlideToggler.immediatelyToggle(block);
+				resultInput.focus();
 			};
 		}else if(target === checkBtn){
 			checkResult();
@@ -109,7 +123,7 @@ let mathOperation = (function () {
 	let start = function(){
 		// console.log('digit =', digit);
 		// console.log('signOperation =', signOperation);
-		
+		console.log(resultInput);
 			firstDigit = parseFloat(randomDigit.start(digit, fraction));
 			secondDigit = parseFloat(randomDigit.start(digit, fraction));
 			removeClass(resultInput, [CLASS_RED, CLASS_GREEN]);
@@ -124,8 +138,6 @@ let mathOperation = (function () {
 			console.log('firstDigit =', firstDigit);
 			console.log('secondDigit =', secondDigit);
 			console.log('btnClick() result =', result)
-
-		
 	}
 
 	let addClass = function(arr, className){
@@ -138,6 +150,7 @@ let mathOperation = (function () {
 
 	let removeClass = function(elementNode, arr){
 		arr.forEach(el =>{
+			//console.log('elementNode =', elementNode);
 			if(elementNode.classList.contains(el)){
 				elementNode.classList.remove(el);
 			};
@@ -151,13 +164,14 @@ let mathOperation = (function () {
 	let createInputs = function(targetEl, quantity){
 		let inputs = '';
 		for(let i = 1; i <= quantity; i++){
-			// if(i <= 8){
-			// 	inputs += `<label><input type="radio" name="${i}" class="inpt borderGrey" checked disabled>${i}</label>`;
-			// }else{
-				inputs += `<label><input type="radio" name="${i}" class="inpt borderGrey" disabled>${i}</label>`;
-			//}
+			if(i === 1){
+				inputs += `<label><input type="radio" name="${i}" class="inpt ${BORDER_BLUE}" disabled>${i}</label>`;
+			}else{
+				inputs += `<label><input type="radio" name="${i}" class="inpt ${BORDER_GRAY}" disabled>${i}</label>`;
+			}
 			
 		};
+		//console.log('inputs =', inputs);
 		targetEl.innerHTML = inputs; 
 	}
 
@@ -176,28 +190,40 @@ let mathOperation = (function () {
 		let index = checkArray(arrInputs);
 		console.log('checkResult() index =', index);
 		if(typeof index === 'string'){
+			console.log('checkResult() if');
 			arrInputs[parseInt(index)].checked = true;
 			addRemoveClasses(value, arrInputs[parseInt(index)]);
+			addInfoToTable(value, index);
+			moduleSlideToggler.toggleWithDelay(block, 500);
+			moduleSlideToggler.toggleWithDelay(tableResult, 700);
 		}else{
+			console.log('checkResult() else');
 			arrInputs[index].checked = true;
 			addRemoveClasses(value, arrInputs[index]);
+			addInfoToTable(value, index);
 			start();
 		};
-		
+		resultInput.focus();
 	};
 
 	let addRemoveClasses = function(value, element){
 		if(value === result){
-			removeClass(element, [BORDER_GRAY]);
+			removeClass(element, [BORDER_GRAY, BORDER_BLUE]);
 			addClass([element], BORDER_GREEN);
 			removeClass(resultInput, [CLASS_BLACK, CLASS_RED]);
 			addClass([resultInput], CLASS_GREEN);
 		}else{
-			removeClass(element, [BORDER_GRAY]);
+			removeClass(element, [BORDER_GRAY, BORDER_BLUE]);
 			addClass([element], BORDER_RED);
 			removeClass(resultInput, [CLASS_BLACK, CLASS_GREEN]);
 			addClass([resultInput], CLASS_RED);
 		};
+		if(element.parentElement.nextElementSibling != null){
+			console.log('element.parentElement.nextElementSibling.firstElementChild =',element.parentElement.nextElementSibling.firstElementChild);
+			removeClass(element.parentNode.nextSibling.firstChild, [BORDER_GRAY]);
+			addClass([element.parentNode.nextSibling.firstChild], BORDER_BLUE);
+		};
+		
 	}
 
 	let checkArray = function(arr){
@@ -219,6 +245,23 @@ let mathOperation = (function () {
 			};
 		});
 		return findIndex;
+	};
+
+	let addInfoToTable = function(value, index){
+		let table = tableResult.firstElementChild;
+		let tbody = table.querySelector('tbody');
+		let row, backgroundColor;
+		(value === result) ? backgroundColor = 'backgroundGreen' : backgroundColor = 'backgroundRed';
+		console.log('isNaN(value) =',isNaN(value))
+		if(isNaN(value)){value = '-'}; 
+		row = `<td>${parseInt(index)+1}</td>
+			<td>${firstDigit}</td>
+			<td>${signOperation}</td>
+			<td>${secondDigit}</td>
+			<td> = </td>
+			<td class="${backgroundColor}">${value}</td>
+			<td>${result}</td>`;
+		tbody.innerHTML += row;
 	};
 
 	return {
