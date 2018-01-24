@@ -2,11 +2,11 @@
 
 /* 
 * Модуль mathOperationAddAndSub приймає на вхід три параметри в вигляді string рядків
-* 	1.)перше число(десятковий дріб або ціле число з різним знаком);
-* 	2.)друге число(десятковий дріб або ціле число з різним знаком);
-* 	3.)знак дії(додавання або віднімання);
+* 	1.)digit1 - перше число(десятковий дріб або ціле число з різним знаком);
+* 	2.)digit2 - друге число(десятковий дріб або ціле число з різним знаком);
+* 	3.)action - знак дії(додавання або віднімання);
 * На виході число(десятковий дріб або ціле число з різним знаком) в вигляді string.
-* Ціль написання даного модуля: в JS є виправлення проблеми з десятковими дробами коли 0.3 - 0.1 = 0.09999999999999998.
+* Ціль написання даного модуля: є виправлення проблеми в JS з десятковими дробами коли 0.3 - 0.1 = 0.09999999999999998.
 */
 let mathOperationAddAndSub = (function(){
 	let point = (digit1, digit2, action) =>{
@@ -257,7 +257,7 @@ let mathOperationAddAndSub = (function(){
 
 		result = resultArr.join("");
 		//console.log("Module: mathOperationAddAndSub result = ", result);
-		console.log(`Module: mathOperationAddAndSub ${digit1} ${action} ${digit2} = ${result}`);
+		//console.log(`Module: mathOperationAddAndSub ${digit1} ${action} ${digit2} = ${result}`);
 		return result;
 	};
 return {

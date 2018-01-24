@@ -1,13 +1,12 @@
 "use strict";
-
 let mathOperation = (function () {
 	let ID,
 		eventsIdEl, hundreds, dozens, units, coma, tenth, hundredth, arrBtn,
-		addBtn, subBtn, mixBtn, startBtn,
-		firstDigitDiv, operationDiv, secondDigitDiv, resultInput, checkBtn, wraperInputs, block,
-		firstDigit, signOperation, secondDigit, result,
+		addBtn, subBtn, mixBtn, signBtn, timeBtn, startBtn, clickStartBtn = false,
+		firstDigitDiv, operationDiv, secondDigitDiv, resultInput, checkBtn, wraperTimer, spanTime, wraperInputs, block,
+		firstDigit, signOperation, secondDigit, result, tryBtn,
 		digit = 0, fraction = 0,
-		tableResult;
+		tableResult, timeState = false, timer, seconds;
 	const NUMBER_OF_REPETITION = 10,
 		CLASS_GREEN = 'win',
 		CLASS_RED = 'active',
@@ -22,8 +21,11 @@ let mathOperation = (function () {
 		addBtn = ID.querySelector('button[name="add"]');
 		subBtn = ID.querySelector('button[name="sub"]');
 		mixBtn = ID.querySelector('button[name="mix"]');
+		timeBtn = ID.querySelector('button[name="time"]');
 		startBtn = ID.querySelector('button[name="start"]');
+		signBtn = ID.querySelectorAll('.sign');
 		
+		wraperTimer = ID.querySelector('div.wraperTimer');
 		wraperInputs = ID.querySelector('div.wraperInputs');
 		firstDigitDiv = ID.querySelector('div.firstDigit');
 		operationDiv = ID.querySelector('div.operation');
@@ -41,29 +43,44 @@ let mathOperation = (function () {
 		arrBtn = ID.querySelectorAll('.digitImage .btn');
 
 		tableResult = ID.querySelector('.tableResult');
+		tryBtn = ID.querySelector('.btn[name=try]');
 		
 		eventsIdEl = ID.addEventListener('click', btnClick, true);
 	};
 
 	let btnClick = function(event){
 		let target = event.target;
-		if(findTarget(target)){
+		if(findTarget(target) && !clickStartBtn){
 			//console.log('btnClick() target.name',target.name);
 			checkBtnDigit(target);
-		}else if(target === addBtn){
+		}else if(target === addBtn && !clickStartBtn){
 			//console.log('btnClick() addBtn');
 			signOperation = '+';
-			addClass([addBtn],'active');
-		}else if(target === subBtn){
+			checkOneBtn(signBtn, addBtn);
+		}else if(target === subBtn && !clickStartBtn){
 			//console.log('btnClick() subBtn');
-			addClass([subBtn],'active');
 			signOperation = '-';
-		}else if(target === startBtn){
+			checkOneBtn(signBtn, subBtn);
+		}else if(target === timeBtn && !clickStartBtn){
+			//console.log('btnClick() subBtn');
+			if(timeState){
+				timeState = false;
+				removeClass(timeBtn,['active']);
+			}else{
+				timeState = true;
+				addClass([timeBtn],'active');
+			};
+		}else if(target === mixBtn && !clickStartBtn){
+			//console.log('btnClick() addBtn');
+			signOperation = '+/-';
+			checkOneBtn(signBtn, mixBtn);
+		}else if(target === startBtn && !clickStartBtn){
 			//console.log('signOperation =', signOperation);
 			//console.log('digit =', digit);
 			//console.log('btnClick() startBtn');
 			if(digit !== 0 && signOperation !== undefined){
 				//console.log('btnClick() startBtn');
+				clickStartBtn = true;
 				start();
 				createInputs(wraperInputs, NUMBER_OF_REPETITION);
 				moduleSlideToggler.immediatelyToggle(block);
@@ -71,6 +88,8 @@ let mathOperation = (function () {
 			};
 		}else if(target === checkBtn){
 			checkResult();
+		}else if(target === tryBtn){
+			repeat();
 		}
 	};
 
@@ -94,7 +113,6 @@ let mathOperation = (function () {
 				digit = 1;
 			};
 		}else if(target === tenth || target === hundredth){
-			
 			if(target === tenth){
 				addClass([tenth, coma, units], CLASS_RED);
 				if(fraction === 0 && digit === 0){
@@ -121,23 +139,32 @@ let mathOperation = (function () {
 	};
 
 	let start = function(){
+		let sign;
+		seconds = 9;
 		// console.log('digit =', digit);
 		// console.log('signOperation =', signOperation);
-		console.log(resultInput);
-			firstDigit = parseFloat(randomDigit.start(digit, fraction));
-			secondDigit = parseFloat(randomDigit.start(digit, fraction));
-			removeClass(resultInput, [CLASS_RED, CLASS_GREEN]);
-			addClass([resultInput], CLASS_BLACK);
-			clearValue(resultInput);
-			
-			addDigit(firstDigitDiv, firstDigit);
+		//console.log(resultInput);
+		firstDigit = parseFloat(randomDigit.start(digit, fraction));
+		secondDigit = parseFloat(randomDigit.start(digit, fraction));
+		removeClass(resultInput, [CLASS_RED, CLASS_GREEN]);
+		addClass([resultInput], CLASS_BLACK);
+		clearValue(resultInput);
+		addDigit(firstDigitDiv, firstDigit);
+		addDigit(secondDigitDiv, secondDigit);
+		if(signOperation === '+/-'){
+			sign = findSign(signOperation);
+			addOperation(sign);
+			result = parseFloat(mathOperationAddAndSub.start(firstDigit, secondDigit, sign));
+		}else{
 			addOperation(signOperation);
-			addDigit(secondDigitDiv, secondDigit);
 			result = parseFloat(mathOperationAddAndSub.start(firstDigit, secondDigit, signOperation));
-
-			console.log('firstDigit =', firstDigit);
-			console.log('secondDigit =', secondDigit);
-			console.log('btnClick() result =', result)
+		};
+		//console.log('start()   signOperation =', sign);
+		if(timeState){ setTime()};
+		
+		console.log('start()  firstDigit =', firstDigit);
+		console.log('start()  secondDigit =', secondDigit);
+		console.log('start()  result =', result);
 	}
 
 	let addClass = function(arr, className){
@@ -183,25 +210,52 @@ let mathOperation = (function () {
 		element.innerHTML = addDigit;
 	};
 
+	let findSign = function(sign){
+		let rndDigit = parseInt(randomDigit.start(1, ));
+		//console.log('findSign()  rndDigit =', rndDigit);
+		if(rndDigit > 5){
+			console.log('findSign()  signOperation = +');
+			return '+';
+		}else{
+			console.log('findSign()  signOperation = -');
+			return '-';
+		};
+	};
+
+	let checkOneBtn = function(targetArr, targetEl){
+		let arr = Array.prototype.slice.call(targetArr);
+		arr.forEach(el =>{
+			if(el === targetEl){
+				addClass([targetEl],'active');
+			}else{
+				removeClass(el,['active']);
+			};
+		});
+	};
+
 	let checkResult = function(){
 		let value = parseFloat(resultInput.value);
 		let arrInputs = Array.prototype.slice.call(wraperInputs.querySelectorAll('input[type=radio]'));
 		//console.log('checkResult() arrInputs =', arrInputs);
 		let index = checkArray(arrInputs);
-		console.log('checkResult() index =', index);
+		//console.log('checkResult() index =', index);
+		clearInterval(timer);
+		// setTimeout(function(){void 0}, 200);
 		if(typeof index === 'string'){
-			console.log('checkResult() if');
+			//console.log('checkResult() if');
 			arrInputs[parseInt(index)].checked = true;
 			addRemoveClasses(value, arrInputs[parseInt(index)]);
 			addInfoToTable(value, index);
 			moduleSlideToggler.toggleWithDelay(block, 500);
 			moduleSlideToggler.toggleWithDelay(tableResult, 700);
+			timeState = false;
+			wraperTimer.innerHTML = '';
 		}else{
-			console.log('checkResult() else');
+			//console.log('checkResult() else');
 			arrInputs[index].checked = true;
 			addRemoveClasses(value, arrInputs[index]);
 			addInfoToTable(value, index);
-			start();
+			setTimeout(start, 400);
 		};
 		resultInput.focus();
 	};
@@ -219,12 +273,11 @@ let mathOperation = (function () {
 			addClass([resultInput], CLASS_RED);
 		};
 		if(element.parentElement.nextElementSibling != null){
-			console.log('element.parentElement.nextElementSibling.firstElementChild =',element.parentElement.nextElementSibling.firstElementChild);
+			//console.log('element.parentElement.nextElementSibling.firstElementChild =',element.parentElement.nextElementSibling.firstElementChild);
 			removeClass(element.parentNode.nextSibling.firstChild, [BORDER_GRAY]);
 			addClass([element.parentNode.nextSibling.firstChild], BORDER_BLUE);
 		};
-		
-	}
+	};
 
 	let checkArray = function(arr){
 		let findIndex;
@@ -250,18 +303,55 @@ let mathOperation = (function () {
 	let addInfoToTable = function(value, index){
 		let table = tableResult.firstElementChild;
 		let tbody = table.querySelector('tbody');
+		// console.log('addInfoToTable() tbody');
+		// console.log(tbody.rows);
 		let row, backgroundColor;
 		(value === result) ? backgroundColor = 'backgroundGreen' : backgroundColor = 'backgroundRed';
-		console.log('isNaN(value) =',isNaN(value))
+		//console.log('addInfoToTable()   isNaN(value) =',isNaN(value))
 		if(isNaN(value)){value = '-'}; 
-		row = `<td>${parseInt(index)+1}</td>
+		//console.log('if inn');
+		row = `<tr><td>${parseInt(index)+1}</td>
 			<td>${firstDigit}</td>
 			<td>${signOperation}</td>
 			<td>${secondDigit}</td>
 			<td> = </td>
 			<td class="${backgroundColor}">${value}</td>
-			<td>${result}</td>`;
+			<td>${result}</td></tr>`;
 		tbody.innerHTML += row;
+	};
+
+	let repeat = function(){
+		let arr = Array.prototype.slice.call(arrBtn);
+		let table = tableResult.firstElementChild;
+		let tbody = table.querySelector('tbody');
+		wraperTimer.innerHTML = '';
+		clearInterval(timer);
+		timeState = false;
+		clickStartBtn = false;
+		signOperation = '';
+		arr.forEach(el =>{
+			removeClass(el,[CLASS_RED]);
+		});
+		checkOneBtn(signBtn, undefined);
+		moduleSlideToggler.immediatelyToggle(tableResult);
+		setTimeout(function(){tbody.innerHTML = '';}, 300);
+	};
+
+	let setTime = function(){
+		wraperTimer.innerHTML = `<div>TIME:<span>${seconds}</span></div>`
+		spanTime = wraperTimer.querySelector('span');
+		timer = setInterval(timeRule,1000);
+	};
+
+	let timeRule = function(){
+		if(seconds > 0){
+			seconds--;
+			spanTime.innerHTML = seconds;
+		}else{
+			spanTime.innerHTML = seconds;
+			checkResult();
+			clearInterval(timer);
+		};
 	};
 
 	return {
@@ -270,5 +360,5 @@ let mathOperation = (function () {
 		}
 	}
 })();
-
-mathOperation.start(document.getElementById('startGameMathOperation'));
+let idStartGame = document.getElementById('startGameMathOperation');
+mathOperation.start(idStartGame);

@@ -1,5 +1,14 @@
 "use strict";
 /*
+*Цей модуль виконує звертання блоку elBlock по висоті при натисненні на кнопку elButton. 
+*Функція аналогічна slideToggler в Query.
+*Має чотири методи:
+*	-oneToggle - звертає/розвертає один раз блок elBlock при натисненні на кнопку elButton.
+*	-dobleToggle - звертає/розвертає двічі блок elBlock при натисненні на кнопку elButton.
+*	-immediatelyToggle - звертає/розвертає негайно блок elBlock без натискання на кнопку.
+*	-toggleWithDelay - звертає/розвертає з затримкою delay блок elBlock без натискання на кнопку.
+*/
+/*
 AUTHOR:	Michal Niewitala
 LICENSE:	MIT
 SOURCE: https://www.cssscript.com/smooth-slide-toggle-vanilla-javascript/
@@ -138,7 +147,7 @@ let moduleSlideToggler = (function() {
 
 	let toggleDelay = function(elBlock, delay){
 		setTimeout(function(){immediately(elBlock)}, delay);
-	}
+	};
 
 	return{
 		oneToggle:one,

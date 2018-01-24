@@ -40,16 +40,6 @@ body{
  margin: 0 auto;
  color:#000;
 }
-/*:before,
-:after*/
-/*:before,
-:after*/
-/*{
-	display: block;
-	clear: both;
-	content: '';
-}*/
-
 
 /*-----------------------------MAIN-------------------------------*/
 main{
@@ -69,7 +59,6 @@ main .container{
 }
 .container > input{
 	width: 100px;
-	/*height: 100%;*/
     font-size: 24px;
     line-height: 24px;
 }
@@ -119,6 +108,16 @@ main .container{
 	color: red;
 	border: 1px solid red;
 }
+.wraperTimer{
+
+}
+.wraperTimer div{
+	width: 100px;
+	margin: 0 auto;
+}
+.wraperTimer div span{
+	
+}
 .wraperInputs{
 
 }
@@ -147,14 +146,12 @@ main .container{
 .backgroundGreen{background-color: green;}
 .block{
 	display: none;
-	/*height: 100px;*/
-	/*overflow: hidden;*/
 }
 .tableResult{
 	display: none;
 }
 .tableResult table{
-	/*border: 1px solid black;*/
+	
 }
 .tableResult table th, .tableResult table td{
 	border: 1px solid black;
