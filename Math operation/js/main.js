@@ -76,7 +76,8 @@ let mathOperation = (function () {
 			checkOneBtn(signBtn, mixBtn);
 		}else if(target === startBtn && !clickStartBtn){
 			//console.log('signOperation =', signOperation);
-			//console.log('digit =', digit);
+			console.log('btnClick() digit =', digit);
+			console.log('btnClick() fraction =', fraction);
 			//console.log('btnClick() startBtn');
 			if(digit !== 0 && signOperation !== undefined){
 				//console.log('btnClick() startBtn');
@@ -134,8 +135,8 @@ let mathOperation = (function () {
 				};
 			};
 		};
-		// console.log('digit =', digit);
-		// console.log('fraction =', fraction);
+		console.log('digit =', digit);
+		console.log('fraction =', fraction);
 	};
 
 	let start = function(){
@@ -162,9 +163,9 @@ let mathOperation = (function () {
 		//console.log('start()   signOperation =', sign);
 		if(timeState){ setTime()};
 		
-		console.log('start()  firstDigit =', firstDigit);
-		console.log('start()  secondDigit =', secondDigit);
-		console.log('start()  result =', result);
+		// console.log('start()  firstDigit =', firstDigit);
+		// console.log('start()  secondDigit =', secondDigit);
+		// console.log('start()  result =', result);
 	}
 
 	let addClass = function(arr, className){
@@ -214,10 +215,10 @@ let mathOperation = (function () {
 		let rndDigit = parseInt(randomDigit.start(1, ));
 		//console.log('findSign()  rndDigit =', rndDigit);
 		if(rndDigit > 5){
-			console.log('findSign()  signOperation = +');
+			//console.log('findSign()  signOperation = +');
 			return '+';
 		}else{
-			console.log('findSign()  signOperation = -');
+			//console.log('findSign()  signOperation = -');
 			return '-';
 		};
 	};
@@ -326,6 +327,8 @@ let mathOperation = (function () {
 		let tbody = table.querySelector('tbody');
 		wraperTimer.innerHTML = '';
 		clearInterval(timer);
+		digit = 0;
+		fraction = 0;
 		timeState = false;
 		clickStartBtn = false;
 		signOperation = '';
