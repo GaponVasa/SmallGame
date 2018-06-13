@@ -142,14 +142,10 @@ let mathOperationAddAndSub = (function(){
 		    };
 		    return arrNew;
 		};
-		// console.log("digit1 =",digit1);
-		// console.log("digit2 =",digit2);
+
 
 	    pointIndex1 = findPointIndex(bigArr1, pointIndex1);
 	    pointIndex2 = findPointIndex(bigArr2, pointIndex2);
-
-	 	//console.log("after pointIndex bigArr1 =",bigArr1);
-		//console.log("after pointIndex bigArr2 =",bigArr2);
 
 		//Початок блока коду який відповідає за вирівнювання чисел в масивах
 		if(pointIndex1 > pointIndex2){//вирівнюємо цілу частину числа
@@ -170,8 +166,6 @@ let mathOperationAddAndSub = (function(){
 				bigArr1.push("0");
 			};
 		};
-		// console.log("after leveling bigArr1 =",bigArr1);
-		// console.log("after leveling bigArr2 =",bigArr2);
 		//Кінець блока коду який відповідає за вирівнювання чисел в масивах
 
 		/*
@@ -180,32 +174,25 @@ let mathOperationAddAndSub = (function(){
 		*
 		*/
 		if(action === "+"){
-			//console.log("+");
 			if(digA > 0 && digB > 0){//a+b=r
 				addArr(bigArr1.reverse(), bigArr2.reverse(), resultArr);
-				//console.log("digA > 0 && digB > 0");
 			}else if(digA < 0 && digB > 0){//-a+b=(+/-)r
 				if(absA >= absB){
 					subArr(bigArr1.reverse(), bigArr2.reverse(), resultArr);
 					resultArr.push("-");
-					//console.log("digA < 0 && digB > 0, absA >= absB");
 				}else if(absA < absB){
 					subArr(bigArr2.reverse(), bigArr1.reverse(), resultArr);
-					//console.log("digA < 0 && digB > 0, absA < absB");
 				};
 			}else if(digA > 0 && digB < 0){//a+(-b)=(+/-)r
 				if(absA >= absB){
 					subArr(bigArr1.reverse(), bigArr2.reverse(), resultArr);
-					//console.log("digA > 0 && digB < 0, absA >= absB");
 				}else if(absA < absB){
 					subArr(bigArr2.reverse(), bigArr1.reverse(), resultArr);
 					resultArr.push("-");
-					//console.log("digA > 0 && digB < 0, absA < absB");
 				};
 			}else if(digA < 0 && digB < 0){//-a+(-b)=(-r)
 				addArr(bigArr1.reverse(), bigArr2.reverse(), resultArr);
 				resultArr.push("-");
-				//console.log("digA < 0 && digB < 0");
 			};
 			if(digA === 0){//коли одна з цифр нуль
 				resultArr = bigArr2.reverse();
@@ -215,31 +202,24 @@ let mathOperationAddAndSub = (function(){
 				if(digA < 0){resultArr.push("-")};
 			};
 		}else{
-			//console.log("-");
 			if(digA > 0 && digB > 0){//a-b=(+/-)r
 				if(absA >= absB){
 					subArr(bigArr1.reverse(), bigArr2.reverse(), resultArr);
-					//console.log("digA > 0 && digB > 0, absA >= absB");
 				}else if(absA < absB){
 					subArr(bigArr2.reverse(), bigArr1.reverse(), resultArr);
 					resultArr.push("-");
-					//console.log("digA > 0 && digB > 0, absA < absB");
 				};
 			}else if(digA < 0 && digB > 0){//-a-b=(-r)
 				addArr(bigArr1.reverse(), bigArr2.reverse(), resultArr);
 				resultArr.push("-");
-				//console.log("digA < 0 && digB > 0");
 			}else if(digA > 0 && digB < 0){
 				addArr(bigArr1.reverse(), bigArr2.reverse(), resultArr);
-				//console.log("digA > 0 && digB < 0");
 			}else if(digA < 0 && digB < 0){//a-(-b)=r
 				if(absA >= absB){
 					subArr(bigArr1.reverse(), bigArr2.reverse(), resultArr);
 					resultArr.push("-");
-					//console.log("digA < 0 && digB < 0, absA >= absB");
 				}else if(absA < absB){//-a-(-b)=(+/-)r
 					subArr(bigArr2.reverse(), bigArr1.reverse(), resultArr);
-					//console.log("digA < 0 && digB < 0, absA < absB");
 				};
 			};
 			if(digA === 0){//коли одна з цифр нуль
@@ -252,12 +232,9 @@ let mathOperationAddAndSub = (function(){
 		};
 		//Кінець блока коду який відповідає за вибір математичної операції в залежності від знаку дії і знаків чисел
 		resultArr.reverse();
-		//console.log("Module: mathOperationAddAndSub resultArr = ", resultArr);
 		resultArr = resizeArr(resultArr);
 
 		result = resultArr.join("");
-		//console.log("Module: mathOperationAddAndSub result = ", result);
-		//console.log(`Module: mathOperationAddAndSub ${digit1} ${action} ${digit2} = ${result}`);
 		return result;
 	};
 return {
@@ -266,10 +243,3 @@ return {
 		}
 	}
 })();
-
-// mathOperationAddAndSub.start(0.1, -0.4, "+");
-// console.log("--------------------------------------------------------");
-// mathOperationAddAndSub.start(2, 8, "+");
-// console.log("--------------------------------------------------------");
-// mathOperationAddAndSub.start(2, 10, "+");
-// console.log("--------------------------------------------------------");

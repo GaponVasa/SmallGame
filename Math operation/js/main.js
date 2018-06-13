@@ -311,7 +311,7 @@ let mathOperation = (function () {
 		//console.log('addInfoToTable()   isNaN(value) =',isNaN(value))
 		if(isNaN(value)){value = '-'}; 
 		//console.log('if inn');
-		row = `<tr><td>${parseInt(index)+1}</td>
+		row = `<tr><td scope="row">${parseInt(index)+1}</td>
 			<td>${firstDigit}</td>
 			<td>${signOperation}</td>
 			<td>${secondDigit}</td>
