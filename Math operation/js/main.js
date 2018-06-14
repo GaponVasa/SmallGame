@@ -4,10 +4,10 @@ let mathOperation = (function () {
 		eventsIdEl, hundreds, dozens, units, coma, tenth, hundredth, arrBtn,
 		addBtn, subBtn, mixBtn, signBtn, timeBtn, startBtn, clickStartBtn = false,
 		firstDigitDiv, operationDiv, secondDigitDiv, resultInput, checkBtn, wraperTimer, spanTime, wraperInputs, block,
-		firstDigit, signOperation, secondDigit, result, tryBtn,
+		firstDigit, signOperation, currentSign, secondDigit, result, tryBtn,
 		digit = 0, fraction = 0,
 		tableResult, timeState = false, timer, seconds;
-	const NUMBER_OF_REPETITION = 10,
+	const NUMBER_OF_REPETITION = 10,//кількість виразів які потрібно вирішити
 		CLASS_GREEN = 'win',
 		CLASS_RED = 'active',
 		CLASS_BLACK = 'black',
@@ -48,21 +48,21 @@ let mathOperation = (function () {
 		eventsIdEl = ID.addEventListener('click', btnClick, true);
 	};
 
+	//функція обробки подіЇ click в залежності від нажатої кнопки
 	let btnClick = function(event){
 		let target = event.target;
 		if(findTarget(target) && !clickStartBtn){
-			//console.log('btnClick() target.name',target.name);
-			checkBtnDigit(target);
+			addRedClassToBtn(target);
+			exempleDigid();
 		}else if(target === addBtn && !clickStartBtn){
-			//console.log('btnClick() addBtn');
 			signOperation = '+';
+			currentSign = '+'
 			checkOneBtn(signBtn, addBtn);
 		}else if(target === subBtn && !clickStartBtn){
-			//console.log('btnClick() subBtn');
 			signOperation = '-';
+			currentSign = '-';
 			checkOneBtn(signBtn, subBtn);
 		}else if(target === timeBtn && !clickStartBtn){
-			//console.log('btnClick() subBtn');
 			if(timeState){
 				timeState = false;
 				removeClass(timeBtn,['active']);
@@ -71,16 +71,11 @@ let mathOperation = (function () {
 				addClass([timeBtn],'active');
 			};
 		}else if(target === mixBtn && !clickStartBtn){
-			//console.log('btnClick() addBtn');
 			signOperation = '+/-';
 			checkOneBtn(signBtn, mixBtn);
 		}else if(target === startBtn && !clickStartBtn){
-			//console.log('signOperation =', signOperation);
-			console.log('btnClick() digit =', digit);
-			console.log('btnClick() fraction =', fraction);
-			//console.log('btnClick() startBtn');
+			findDigitAndFraction(arrBtn);
 			if(digit !== 0 && signOperation !== undefined){
-				//console.log('btnClick() startBtn');
 				clickStartBtn = true;
 				start();
 				createInputs(wraperInputs, NUMBER_OF_REPETITION);
@@ -91,83 +86,102 @@ let mathOperation = (function () {
 			checkResult();
 		}else if(target === tryBtn){
 			repeat();
-		}
+		};
 	};
 
+	//функція яка визначає чи належить target(нажата кнопка) до arrBtn(кнопки вибору типу числа)
 	let findTarget = function(target){
 		let arr = Array.prototype.slice.call(arrBtn);
 		if(arr.includes(target)){return true};
 	};
 	
-	let checkBtnDigit = function(target){
+	//функція яка добавляє клас CLASS_RED до нажатої кнопки вибору типу числа
+	let addRedClassToBtn = function(target){
 		if(target === hundreds || target === dozens || target === units){
 			if(target === hundreds){
 				addClass([hundreds, dozens, units], CLASS_RED);
-				digit = 3;
 			};
 			if(target === dozens){
 				addClass([dozens, units], CLASS_RED);
-				digit = 2;
 			};
 			if(target === units){
 				addClass([units], CLASS_RED);
-				digit = 1;
 			};
 		}else if(target === tenth || target === hundredth){
 			if(target === tenth){
-				addClass([tenth, coma, units], CLASS_RED);
-				if(fraction === 0 && digit === 0){
-					fraction = 2;
-					digit = 3;
-				}else{
-					fraction = digit + 1;
-					digit += 2;
-				};
+				addClass([tenth, coma], CLASS_RED);
 			};
 			if(target === hundredth){
-				addClass([hundredth, tenth, coma, units], CLASS_RED);
-				if(fraction === 0 && digit === 0){
-					fraction = 2;
-					digit = 4;
-				}else{
-					fraction = digit + 1;
-					digit += 3;
-				};
+				addClass([hundredth, tenth, coma], CLASS_RED);
 			};
 		};
-		console.log('digit =', digit);
-		console.log('fraction =', fraction);
 	};
 
+	//Добавляємо число яке ми вибираємо в <span id="digitExemple"> для візуального ефекту
+	let exempleDigid = function(){
+		let digitExemple;
+		let digitExempleElement = document.getElementById('digitExemple');
+		findDigitAndFraction(arrBtn);
+		digitExemple = parseFloat(randomDigit.start(digit, fraction));
+		digitExempleElement.innerHTML = digitExemple;
+	}
+
+	/*
+	*функція визначає digit і fraction(вони потрібні для генерації числа)
+	*перебираючи кожний елемент псевдомасиву arrBtn і шукаючи елементи з 
+	*класом CLASS_RED
+	*/
+	let findDigitAndFraction = function(pseudoArr){
+		let arr = Array.prototype.slice.call(pseudoArr);
+		let count = 0;
+		arr.forEach((el, ind) =>{
+			if(el.classList.contains(CLASS_RED)){
+				count++;
+				if(el.name === 'coma'){
+					fraction = count;
+				};
+				digit = count;
+			};
+		});
+	};
+
+	//функція яка шукає який input вибраний та повертає його value.
+	//потрібна для визначення кількості секунд
+	let findValueSeconds = function(){
+		let inputs = ID.querySelectorAll('input[name=time]');
+		let arr = Array.prototype.slice.call(inputs);
+		let seconds;
+		arr.forEach(el =>{
+			if(el.checked){seconds =el.value};
+		});
+		return seconds;
+	};
+
+	//основна функція запуску
 	let start = function(){
-		let sign;
-		seconds = 9;
-		// console.log('digit =', digit);
-		// console.log('signOperation =', signOperation);
-		//console.log(resultInput);
+		seconds = findValueSeconds();
 		firstDigit = parseFloat(randomDigit.start(digit, fraction));
 		secondDigit = parseFloat(randomDigit.start(digit, fraction));
 		removeClass(resultInput, [CLASS_RED, CLASS_GREEN]);
 		addClass([resultInput], CLASS_BLACK);
-		clearValue(resultInput);
-		addDigit(firstDigitDiv, firstDigit);
-		addDigit(secondDigitDiv, secondDigit);
+		resultInput.value = '';
+		firstDigitDiv.innerHTML = firstDigit;
+		secondDigitDiv.innerHTML = secondDigit;
 		if(signOperation === '+/-'){
-			sign = findSign(signOperation);
-			addOperation(sign);
-			result = parseFloat(mathOperationAddAndSub.start(firstDigit, secondDigit, sign));
+			currentSign = findSign(signOperation);
+			operationDiv.innerHTML = currentSign;
+			result = parseFloat(mathOperationAddAndSub.start(firstDigit, secondDigit, currentSign));
 		}else{
-			addOperation(signOperation);
+			operationDiv.innerHTML = signOperation;
 			result = parseFloat(mathOperationAddAndSub.start(firstDigit, secondDigit, signOperation));
 		};
-		//console.log('start()   signOperation =', sign);
-		if(timeState){ setTime()};
-		
-		// console.log('start()  firstDigit =', firstDigit);
-		// console.log('start()  secondDigit =', secondDigit);
-		// console.log('start()  result =', result);
-	}
+		if(timeState){ 
+			seconds = findValueSeconds();
+			setTime();
+		};
+	};
 
+	//добавляємо до елементів в масиві клас
 	let addClass = function(arr, className){
 		arr.forEach(el =>{
 			if(!el.classList.contains(className)){
@@ -176,53 +190,39 @@ let mathOperation = (function () {
 		});
 	};
 
+	//видаляємо з елементу перелік класів в масиві
 	let removeClass = function(elementNode, arr){
 		arr.forEach(el =>{
-			//console.log('elementNode =', elementNode);
 			if(elementNode.classList.contains(el)){
 				elementNode.classList.remove(el);
 			};
 		});
 	};
 
-	let clearValue = function(el){
-		el.value = '';
-	};
-
+	//функція яка створює елементи для відображення порядкового номеру виразу
 	let createInputs = function(targetEl, quantity){
 		let inputs = '';
 		for(let i = 1; i <= quantity; i++){
 			if(i === 1){
-				inputs += `<label><input type="radio" name="${i}" class="inpt ${BORDER_BLUE}" disabled>${i}</label>`;
+				inputs += `<label><input type="radio" name="${i}" class="inpt ${BORDER_BLUE} mr-2" disabled>${i}</label>`;
 			}else{
-				inputs += `<label><input type="radio" name="${i}" class="inpt ${BORDER_GRAY}" disabled>${i}</label>`;
-			}
-			
+				inputs += `<label><input type="radio" name="${i}" class="inpt ${BORDER_GRAY} mr-2" disabled>${i}</label>`;
+			};
 		};
-		//console.log('inputs =', inputs);
 		targetEl.innerHTML = inputs; 
-	}
-
-	let addOperation = function(signOperation){
-		operationDiv.innerHTML = signOperation;
 	};
 
-	let addDigit = function(element, addDigit){
-		element.innerHTML = addDigit;
-	};
-
+	//Функція яка довільно визначає який буде знак + або -
 	let findSign = function(sign){
 		let rndDigit = parseInt(randomDigit.start(1, ));
-		//console.log('findSign()  rndDigit =', rndDigit);
 		if(rndDigit > 5){
-			//console.log('findSign()  signOperation = +');
 			return '+';
 		}else{
-			//console.log('findSign()  signOperation = -');
 			return '-';
 		};
 	};
 
+	//Добавляємо або видаляємо клас 'active' у елементу targetEl
 	let checkOneBtn = function(targetArr, targetEl){
 		let arr = Array.prototype.slice.call(targetArr);
 		arr.forEach(el =>{
@@ -234,16 +234,13 @@ let mathOperation = (function () {
 		});
 	};
 
+	//перевіряємо введене число і заносимо дані в таблицю
 	let checkResult = function(){
 		let value = parseFloat(resultInput.value);
 		let arrInputs = Array.prototype.slice.call(wraperInputs.querySelectorAll('input[type=radio]'));
-		//console.log('checkResult() arrInputs =', arrInputs);
 		let index = checkArray(arrInputs);
-		//console.log('checkResult() index =', index);
 		clearInterval(timer);
-		// setTimeout(function(){void 0}, 200);
 		if(typeof index === 'string'){
-			//console.log('checkResult() if');
 			arrInputs[parseInt(index)].checked = true;
 			addRemoveClasses(value, arrInputs[parseInt(index)]);
 			addInfoToTable(value, index);
@@ -252,15 +249,15 @@ let mathOperation = (function () {
 			timeState = false;
 			wraperTimer.innerHTML = '';
 		}else{
-			//console.log('checkResult() else');
 			arrInputs[index].checked = true;
 			addRemoveClasses(value, arrInputs[index]);
 			addInfoToTable(value, index);
-			setTimeout(start, 400);
+			start();
 		};
 		resultInput.focus();
 	};
 
+	//правила роботи з класами під час визначення вірно/невірно виконано завдання
 	let addRemoveClasses = function(value, element){
 		if(value === result){
 			removeClass(element, [BORDER_GRAY, BORDER_BLUE]);
@@ -274,25 +271,21 @@ let mathOperation = (function () {
 			addClass([resultInput], CLASS_RED);
 		};
 		if(element.parentElement.nextElementSibling != null){
-			//console.log('element.parentElement.nextElementSibling.firstElementChild =',element.parentElement.nextElementSibling.firstElementChild);
 			removeClass(element.parentNode.nextSibling.firstChild, [BORDER_GRAY]);
 			addClass([element.parentNode.nextSibling.firstChild], BORDER_BLUE);
 		};
 	};
 
+	//шукаємо індекс елементу з яким на даний час працюємо
 	let checkArray = function(arr){
 		let findIndex;
 		let length = arr.length;
 		arr.some((el, ind) =>{
-			//console.log('ind =', ind)
-			//console.log('el.checked =', el.checked)
 			if(el.checked === false && findIndex === undefined){
 				if(ind === length - 1){
-					//console.log('el.checked === FALSE && ind === length - 1')
 					findIndex = '' + ind;
 					return;
 				}else{
-					//console.log('el.checked === FALSE')
 					findIndex = ind;
 					return;
 				};
@@ -301,19 +294,16 @@ let mathOperation = (function () {
 		return findIndex;
 	};
 
+	//Добавляємо до таблиці результатів дані
 	let addInfoToTable = function(value, index){
 		let table = tableResult.firstElementChild;
 		let tbody = table.querySelector('tbody');
-		// console.log('addInfoToTable() tbody');
-		// console.log(tbody.rows);
 		let row, backgroundColor;
 		(value === result) ? backgroundColor = 'backgroundGreen' : backgroundColor = 'backgroundRed';
-		//console.log('addInfoToTable()   isNaN(value) =',isNaN(value))
 		if(isNaN(value)){value = '-'}; 
-		//console.log('if inn');
 		row = `<tr><td scope="row">${parseInt(index)+1}</td>
 			<td>${firstDigit}</td>
-			<td>${signOperation}</td>
+			<td>${currentSign}</td>
 			<td>${secondDigit}</td>
 			<td> = </td>
 			<td class="${backgroundColor}">${value}</td>
@@ -321,6 +311,7 @@ let mathOperation = (function () {
 		tbody.innerHTML += row;
 	};
 
+	//Скидаємо всі налаштування, та приводимо програму до початкового стану 
 	let repeat = function(){
 		let arr = Array.prototype.slice.call(arrBtn);
 		let table = tableResult.firstElementChild;
@@ -340,12 +331,14 @@ let mathOperation = (function () {
 		setTimeout(function(){tbody.innerHTML = '';}, 300);
 	};
 
+	//встановлюємо відлік часу в секундах
 	let setTime = function(){
 		wraperTimer.innerHTML = `<div>TIME:<span>${seconds}</span></div>`
 		spanTime = wraperTimer.querySelector('span');
 		timer = setInterval(timeRule,1000);
 	};
 
+	//Лічільник секунд і якщо лічильник доходить до 0, перевіряємо дію оператору(він ввів дані і вони вірні)
 	let timeRule = function(){
 		if(seconds > 0){
 			seconds--;
